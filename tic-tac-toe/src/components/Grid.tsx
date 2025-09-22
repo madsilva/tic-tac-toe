@@ -6,7 +6,6 @@ interface GridProps {
 }
 
 const Grid = ({ gameState, makeMove }: GridProps) => {
-
     return (
         <div className="text-xl text-purple-600">
             <p><Cell makeMove={makeMove} gameState={gameState} row={0} col={0}/>

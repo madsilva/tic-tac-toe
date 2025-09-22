@@ -22,28 +22,37 @@ const currentPlayerDisplay = () => {
 
 function App() {
   const [gameState, setGameState] = useState(initialGameState)
-  const [count, setCount] = useState(0)
 
   const makeMove = (row: number, col: number) => {
-    const newGameState = structuredClone(gameState)
-    newGameState.board[row][col] = gameState.currentPlayer
-    newGameState.currentPlayer = gameState.currentPlayer === 'x' ? 'o' : 'x' 
-    if (checkForWin(newGameState)) {
-      resetGame()
-    } else {
-
+    if (checkMove(row, col)) {
+      const newGameState = structuredClone(gameState)
+      newGameState.board[row][col] = gameState.currentPlayer
+      newGameState.currentPlayer = gameState.currentPlayer === 'x' ? 'o' : 'x' 
+      if (checkForWin(newGameState)) {
+        newGameState.winner = gameState.currentPlayer
+      }
+      setGameState(newGameState)
     }
-    setGameState(newGameState)
+    
+  }
+
+  const checkMove = (row: number, col: number) : boolean => {
+    if (gameState.winner) {
+      return false
+    }
+    if (gameState.board[row][col] !== "") {
+      return false
+    }
+    return true
   }
 
   const resetGame = () => {
-    
+    const newGameState = structuredClone(initialGameState)
+    setGameState(newGameState)
   }
 
   const checkForWin = (newGameState: GameState): boolean => {
     const board = newGameState.board
-    console.log(board[0][0] === board[0][1])
-    console.log(board[0][0] && board[0][0] === board[0][1] && board[0][1] === board[0][2])
     if (
       // horizontal
       (board[0][0] && board[0][0] === board[0][1] && board[0][1] === board[0][2])
@@ -68,7 +77,9 @@ function App() {
     <>
       <div>
         <p>current player is {gameState.currentPlayer}</p>
+        {gameState.winner ? (<>the winner is {gameState.winner}</>) : ("")}
         <Grid gameState={gameState} makeMove={makeMove} />
+        <button onClick={resetGame}>reset game!</button>
         </div>
     </>
   )
