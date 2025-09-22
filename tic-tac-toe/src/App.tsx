@@ -33,7 +33,6 @@ function App() {
       }
       setGameState(newGameState)
     }
-    
   }
 
   const checkMove = (row: number, col: number) : boolean => {
@@ -64,7 +63,7 @@ function App() {
       || (board[0][2] && board[0][2] === board[1][2] && board[0][2] === board[2][2])
       // diagonal
       || (board[0][0] && board[0][0] === board[1][1] && board[0][0] === board[2][2])
-      || (board[0][0] && board[0][0] === board[1][1] && board[0][0] === board[2][2])
+      || (board[0][2] && board[0][2] === board[1][1] && board[0][2] === board[0][2])
       )
     {
       alert("wowwwww")
