@@ -4,20 +4,14 @@ import Grid from './components/Grid'
 
 export type GameState = {
   board: string[][]
-  currentPlayer: 'o' | 'x'
-  winner: 'o' | 'x' | undefined
+  currentPlayer: '💚' | '🩷'
+  winner: '🩷' | '💚' | undefined
 }
 
 const initialGameState: GameState = {
   board: [["", "", ""], ["", "", ""], ["", "", ""]],
-  currentPlayer: 'x', 
+  currentPlayer: '🩷', 
   winner: undefined
-}
-
-const currentPlayerDisplay = () => {
-  return (
-    <></>
-  )
 }
 
 function App() {
@@ -27,7 +21,7 @@ function App() {
     if (checkMove(row, col)) {
       const newGameState = structuredClone(gameState)
       newGameState.board[row][col] = gameState.currentPlayer
-      newGameState.currentPlayer = gameState.currentPlayer === 'x' ? 'o' : 'x' 
+      newGameState.currentPlayer = gameState.currentPlayer === '🩷' ? '💚' : '🩷' 
       if (checkForWin(newGameState)) {
         newGameState.winner = gameState.currentPlayer
       }
@@ -63,10 +57,9 @@ function App() {
       || (board[0][2] && board[0][2] === board[1][2] && board[0][2] === board[2][2])
       // diagonal
       || (board[0][0] && board[0][0] === board[1][1] && board[0][0] === board[2][2])
-      || (board[0][2] && board[0][2] === board[1][1] && board[0][2] === board[0][2])
+      || (board[0][2] && board[0][2] === board[1][1] && board[0][2] === board[2][0])
       )
     {
-      alert("wowwwww")
       return true
     }
     return false
