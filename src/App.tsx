@@ -5,7 +5,7 @@ import Grid from './components/Grid'
 export type GameState = {
   board: string[][]
   currentPlayer: '💚' | '🩷'
-  winner: '🩷' | '💚' | undefined
+  winner: '🩷' | '💚' | undefined | 'draw'
 }
 
 const initialGameState: GameState = {
@@ -24,6 +24,8 @@ function App() {
       newGameState.currentPlayer = gameState.currentPlayer === '🩷' ? '💚' : '🩷' 
       if (checkForWin(newGameState)) {
         newGameState.winner = gameState.currentPlayer
+      } else if (checkForDraw(newGameState)) {
+        newGameState.winner = 'draw'
       }
       setGameState(newGameState)
     }
@@ -37,6 +39,10 @@ function App() {
       return false
     }
     return true
+  }
+
+  const checkForDraw = (newGameState : GameState) : boolean => {
+    return false
   }
 
   const resetGame = () => {
