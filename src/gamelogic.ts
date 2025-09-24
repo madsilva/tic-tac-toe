@@ -10,10 +10,15 @@ export const initialGameState: GameState = {
   winner: undefined
 }
 
-export const makeMove = (gameState: GameState, row: number, col: number) => {
-  if (isMoveValid(gameState, row, col)) {
+export type Move = {
+  row: number,
+  col: number
+}
+
+export const makeMove = (gameState: GameState, move: Move) => {
+  if (isMoveValid(gameState, move)) {
     const newGameState = structuredClone(gameState)
-    newGameState.board[row][col] = gameState.currentPlayer
+    newGameState.board[move.row][move.col] = gameState.currentPlayer
     newGameState.currentPlayer = gameState.currentPlayer === '🩷' ? '💚' : '🩷' 
     if (checkForWin(newGameState)) {
       newGameState.winner = gameState.currentPlayer
@@ -26,12 +31,12 @@ export const makeMove = (gameState: GameState, row: number, col: number) => {
   }
 }
 
-const isMoveValid = (gameState: GameState, row: number, col: number) : boolean => {
+const isMoveValid = (gameState: GameState, move: Move) : boolean => {
   if (gameState.winner) {
     return false
   }
   // There is already a move made in this space
-  if (gameState.board[row][col] !== "") {
+  if (gameState.board[move.row][move.col] !== "") {
     return false
   }
   return true

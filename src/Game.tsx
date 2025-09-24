@@ -1,17 +1,44 @@
-import { useState } from 'react'
-import { type GameState, initialGameState } from './gamelogic'
+import { useState, useEffect } from 'react'
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { type GameState, type Move, initialGameState } from './gamelogic'
 import { makeMove as getNewGameState } from './gamelogic'
 
 const Game = () => {
-  const [gameState, setGameState] = useState(initialGameState)
+  const queryClient = useQueryClient()
 
-  const makeMove = (row: number, col: number) => {
-    setGameState(getNewGameState(gameState, row, col))
+  const getGame = async () => {
+    const result = await fetch('/game')
+    return await result.json()
   }
 
-  const resetGame = () => {
+  useEffect( () => {
+    const fetchGame = async () => {
+      const newGame = await getGame()
+      setGameState(newGame)
+    }
+    fetchGame()
+  }, [])
+
+  const makeMove = async (move: Move) => {
+    const res = await fetch('/makeMove', {method: 'POST', body: JSON.stringify(move),  headers: { 'Content-Type': 'application/json' } })
+    const newGame = await res.json()
+    setGameState(newGame)
+  }
+
+  const sendMove = useMutation({
+    mutationFn: makeMove,
+    onSuccess: (newGameBoard) => {
+      console.log('success')
+    }
+  })
+
+  const [gameState, setGameState] = useState(initialGameState)
+
+  const resetGame = async () => {
     const newGameState = structuredClone(initialGameState)
     setGameState(newGameState)
+    const res = await fetch('/resetGame', {method: 'POST', body: '',  headers: { 'Content-Type': 'application/json' } })
+    
   }
 
   return (
@@ -41,7 +68,7 @@ const Game = () => {
 }
 
 interface CellProps {
-    makeMove: (row: number, col: number) => void,
+    makeMove: (move: Move) => void,
     row: number,
     col: number,
     gameState: GameState
@@ -49,7 +76,7 @@ interface CellProps {
 
 const Cell = ({ makeMove, row, col, gameState }: CellProps) => {
   const handleClick = () => {
-    makeMove(row, col)
+    makeMove({ row: row, col: col })
   }
 
   return (
