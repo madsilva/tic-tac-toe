@@ -1,10 +1,23 @@
+import { v4 as uuidv4 } from "uuid"
+
 export type GameState = {
+  id: string,
   board: string[][]
   currentPlayer: '💚' | '🩷'
   winner: '🩷' | '💚' | undefined | 'draw'
 }
 
+export const createNewGameState = (): GameState => {
+  return ({
+    id: uuidv4(),
+    board: [["", "", ""], ["", "", ""], ["", "", ""]],
+    currentPlayer: '🩷', 
+    winner: undefined
+  })
+}
+
 export const initialGameState: GameState = {
+  id: '',
   board: [["", "", ""], ["", "", ""], ["", "", ""]],
   currentPlayer: '🩷', 
   winner: undefined

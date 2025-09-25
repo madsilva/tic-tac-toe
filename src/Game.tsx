@@ -1,38 +1,36 @@
 import { useState, useEffect } from 'react'
-import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useMutation, useQueryClient, useQuery } from "@tanstack/react-query";
 import { type GameState, type Move, initialGameState } from './gamelogic'
-import { makeMove as getNewGameState } from './gamelogic'
+import { useParams } from "react-router"
 
 const Game = () => {
+  const { gameId } = useParams()
   const queryClient = useQueryClient()
 
-  const getGame = async () => {
-    const result = await fetch('/game')
+  const getGame = async (gameId) => {
+    const result = await fetch(`/get_game/${gameId}`)
     return await result.json()
   }
 
-  useEffect( () => {
-    const fetchGame = async () => {
-      const newGame = await getGame()
-      setGameState(newGame)
-    }
-    fetchGame()
-  }, [])
+  const { isPending, error, data } = useQuery({queryKey: ['gameState', gameId], queryFn: () => getGame(gameId)})
+  const gameState = data as GameState
 
-  const makeMove = async (move: Move) => {
-    const res = await fetch('/makeMove', {method: 'POST', body: JSON.stringify(move),  headers: { 'Content-Type': 'application/json' } })
-    const newGame = await res.json()
-    setGameState(newGame)
+  const sendMove = async ({ gameId, move }) => {
+    const res = await fetch(`/make_move/${gameId}`, {method: 'POST', body: JSON.stringify(move),  headers: { 'Content-Type': 'application/json' } })
+    return await res.json()
   }
 
-  const sendMove = useMutation({
-    mutationFn: makeMove,
-    onSuccess: (newGameBoard) => {
+  const makeMove = async (gameId: string, move: Move) => {
+    moveMutation.mutate({gameId, move})
+  }
+
+  const moveMutation = useMutation({
+    mutationFn: sendMove,
+    onSuccess: (data) => {
       console.log('success')
+      queryClient.invalidateQueries(['gameState', data.gameId])
     }
   })
-
-  const [gameState, setGameState] = useState(initialGameState)
 
   const resetGame = async () => {
     const newGameState = structuredClone(initialGameState)
@@ -41,7 +39,9 @@ const Game = () => {
     
   }
 
-  return (
+  if (isPending) {
+    return <div>loading</div>
+  } else return (
     <div>
       <p>Current player is {gameState.currentPlayer}</p>
       {gameState.winner ? (<>the winner is {gameState.winner}</>) : ("")}
@@ -68,7 +68,7 @@ const Game = () => {
 }
 
 interface CellProps {
-    makeMove: (move: Move) => void,
+    makeMove: (id: string, move: Move) => void,
     row: number,
     col: number,
     gameState: GameState
@@ -76,7 +76,7 @@ interface CellProps {
 
 const Cell = ({ makeMove, row, col, gameState }: CellProps) => {
   const handleClick = () => {
-    makeMove({ row: row, col: col })
+    makeMove(gameState.id, { row: row, col: col })
   }
 
   return (
