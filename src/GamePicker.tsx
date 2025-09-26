@@ -7,29 +7,31 @@ export const GamePicker = () => {
 
   const getGames = async () => {
     const result = await fetch('/list', { method: 'GET' })
-    const json_result = await result.json()
-    console.log("getGames result", json_result)
-    return json_result
+    return await result.json()
   }
 
   const { isPending, error, data } = useQuery({queryKey: ['games'], queryFn: getGames})
-  console.log("this is the data", data)
-  
+
   const handleNewGame = async () => {
     const res = await fetch('/create', {method: 'POST', headers: { 'Content-Type': 'application/json' } })
+    return await res.json()
   }
-  
-  console.log('data as list?', Object.entries(data))
+
+  const newGameMutation = useMutation({
+    mutationFn: handleNewGame,
+    onSuccess: (data) => {
+      queryClient.invalidateQueries({queryKey: ['games'], refetchType: 'active'})
+    }
+  })
+
   if (isPending) {
     return <p>loading....</p>
   } else {
       return (
-          
-          <>
-            {Object.entries(data).map(([id, game]) => <div><Link to={`/game/${game.id}`}>{game.id}</Link></div>)}
-            <button onClick={handleNewGame}>new game!!!!</button>
-          </>
-        )
+        <>
+          {Object.entries(data).map(([id, game]) => <div key={game.id}><Link to={`/game/${game.id}`}>{game.id}</Link></div>)}
+          <button onClick={() => newGameMutation.mutate()}>new game!!!!</button>
+        </>
+      )
   }
-  
 }

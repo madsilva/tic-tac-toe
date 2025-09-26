@@ -15,7 +15,7 @@ app.get("/list", (req, res) => {
 app.post("/create", (req, res) => {
   const newGame = createNewGameState()
   games.set(newGame.id, newGame)
-  
+  res.json({ success: true }) 
 })
 
 app.post("/make_move/:id", (req, res) => {

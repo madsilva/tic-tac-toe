@@ -27,16 +27,13 @@ const Game = () => {
   const moveMutation = useMutation({
     mutationFn: sendMove,
     onSuccess: (data) => {
-      console.log('success')
       queryClient.invalidateQueries(['gameState', data.gameId])
     }
   })
 
   const resetGame = async () => {
     const newGameState = structuredClone(initialGameState)
-    setGameState(newGameState)
     const res = await fetch('/resetGame', {method: 'POST', body: '',  headers: { 'Content-Type': 'application/json' } })
-    
   }
 
   if (isPending) {
