@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react'
 import { useMutation, useQueryClient, useQuery } from "@tanstack/react-query";
 import { type GameState, type Move, initialGameState } from './gamelogic'
-import { useParams } from "react-router"
+import { useParams, Link } from "react-router"
 
 const Game = () => {
   const { gameId } = useParams()
@@ -47,6 +47,7 @@ const Game = () => {
     return <div>loading</div>
   } else return (
     <div>
+      <Link to='/'><button className='absolute top-4 left-4'>Back to games</button></Link>
       <p>Current player is {gameState.currentPlayer}</p>
       {gameState.winner ? (<>the winner is {gameState.winner}</>) : ("")}
       <div className="text-xl text-purple-600">

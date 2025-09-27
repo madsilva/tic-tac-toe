@@ -30,7 +30,7 @@ export const GamePicker = () => {
   } else {
       return (
         <>
-          {Object.entries(data).map(([id, game]) => <div key={game.id}><Link to={`/game/${game.id}`}>{game.id}</Link></div>)}
+          {Object.entries(data).map(([id, game]) => <div key={game.id}><Link to={`/game/${game.id}`}>{game.id}{game.currentPlayer}</Link></div>)}
           <button onClick={() => newGameMutation.mutate()}>new game!!!!</button>
         </>
       )

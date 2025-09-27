@@ -4,7 +4,7 @@ export type GameState = {
   id: string,
   board: string[][]
   currentPlayer: '💚' | '🩷'
-  winner: '🩷' | '💚' | '' | 'draw'
+  winner: string
 }
 
 export const createNewGameState = (): GameState => {
