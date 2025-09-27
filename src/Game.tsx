@@ -31,10 +31,17 @@ const Game = () => {
     }
   })
 
-  const resetGame = async () => {
-    const newGameState = structuredClone(initialGameState)
-    const res = await fetch('/resetGame', {method: 'POST', body: '',  headers: { 'Content-Type': 'application/json' } })
+  const resetGame = async (gameId) => {
+    const res = await fetch(`/resetGame/${gameId}`, {method: 'POST', body: '',  headers: { 'Content-Type': 'application/json' } })
+    return await res.json()
   }
+
+  const resetGameMutation = useMutation({
+    mutationFn: resetGame,
+    onSuccess:(data) => {
+      queryClient.invalidateQueries(['gameState', data.gameId])
+    }
+  })
 
   if (isPending) {
     return <div>loading</div>
@@ -59,7 +66,7 @@ const Game = () => {
           <Cell makeMove={makeMove} gameState={gameState} row={2} col={2}/>
         </p>
       </div>
-      <button onClick={resetGame}>reset game!</button>
+      <button onClick={() => resetGameMutation.mutate(gameState.id)}>reset game!</button>
     </div>
   )
 }

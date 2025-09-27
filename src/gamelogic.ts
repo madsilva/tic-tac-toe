@@ -4,7 +4,7 @@ export type GameState = {
   id: string,
   board: string[][]
   currentPlayer: '💚' | '🩷'
-  winner: '🩷' | '💚' | undefined | 'draw'
+  winner: '🩷' | '💚' | '' | 'draw'
 }
 
 export const createNewGameState = (): GameState => {
@@ -12,7 +12,7 @@ export const createNewGameState = (): GameState => {
     id: uuidv4(),
     board: [["", "", ""], ["", "", ""], ["", "", ""]],
     currentPlayer: '🩷', 
-    winner: undefined
+    winner: ''
   })
 }
 
@@ -20,12 +20,22 @@ export const initialGameState: GameState = {
   id: '',
   board: [["", "", ""], ["", "", ""], ["", "", ""]],
   currentPlayer: '🩷', 
-  winner: undefined
+  winner: ''
 }
 
 export type Move = {
   row: number,
   col: number
+}
+
+export const resetGame = (gameId) => {
+  return {
+    id: gameId,
+    board: [["", "", ""], ["", "", ""], ["", "", ""]],
+    currentPlayer: '🩷',
+    winner: ''
+  }
+
 }
 
 export const makeMove = (gameState: GameState, move: Move) => {
