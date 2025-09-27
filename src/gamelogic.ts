@@ -87,5 +87,5 @@ const checkForWin = (newGameState: GameState): boolean => {
 }
 
 const checkForDraw = (newGameState : GameState) : boolean => {
-  return false
+  return !(newGameState.board.flat().includes(''))
 }
