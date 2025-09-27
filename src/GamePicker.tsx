@@ -7,6 +7,7 @@ export const GamePicker = () => {
 
   const getGames = async () => {
     const result = await fetch('/list', { method: 'GET' })
+    console.log("result in picker", result)
     return await result.json()
   }
 
